@@ -1,0 +1,148 @@
+[project]
+name = "stemsplit-python"
+version = "0.1.0"
+description = "Official Python SDK for the StemSplit hosted stem-separation API. Synchronous client, typed pydantic models, automatic file uploads, job-completion polling, YouTube jobs, webhook signature verification, and a Stripe-style error hierarchy."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+    { name = "StemSplit", email = "team@stemsplit.io" },
+]
+maintainers = [
+    { name = "StemSplit", email = "team@stemsplit.io" },
+]
+keywords = [
+    "stemsplit",
+    "stem-separation",
+    "stems",
+    "vocal-removal",
+    "vocal-remover",
+    "vocal-isolation",
+    "instrumental-extraction",
+    "karaoke",
+    "karaoke-maker",
+    "acapella",
+    "acapella-extractor",
+    "audio",
+    "music",
+    "audio-ml",
+    "audio-processing",
+    "music-source-separation",
+    "source-separation",
+    "demucs",
+    "htdemucs",
+    "sdk",
+    "api",
+    "api-client",
+    "client",
+    "youtube",
+    "rest",
+    "http-client",
+    "webhooks",
+    "bpm",
+    "key-detection",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Multimedia",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+    "Topic :: Multimedia :: Sound/Audio :: Conversion",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "httpx>=0.27,<1.0",
+    "pydantic>=2.5,<3.0",
+    "typing-extensions>=4.7; python_version<'3.11'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "respx>=0.21",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+
+[project.urls]
+Homepage = "https://stemsplit.io/developers"
+Documentation = "https://stemsplit.io/developers/docs"
+Repository = "https://github.com/StemSplit/stemsplit-python"
+"Source Code" = "https://github.com/StemSplit/stemsplit-python"
+"Bug Tracker" = "https://github.com/StemSplit/stemsplit-python/issues"
+Changelog = "https://github.com/StemSplit/stemsplit-python/blob/main/CHANGELOG.md"
+Discussions = "https://github.com/StemSplit/stemsplit-python/discussions"
+"Hosted API" = "https://stemsplit.io/developers"
+"API Reference" = "https://stemsplit.io/developers/reference"
+"StemSplit App" = "https://stemsplit.io"
+
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/stemsplit_python"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/stemsplit_python",
+    "openapi",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "RUF"]
+ignore = [
+    "E501",
+    "B008",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src/stemsplit_python"]
+
+[[tool.mypy.overrides]]
+module = "respx.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning:pydantic.*",
+]
