@@ -6,7 +6,8 @@ Get an API key at https://stemsplit.io/app/settings/api, then::
     from stemsplit_python import StemSplit
 
     client = StemSplit(api_key="sk_live_...")  # or set STEMSPLIT_API_KEY
-    job = client.jobs.create(audio=Path("song.mp3"), output_type="BOTH").wait()
+    job = client.jobs.create(audio=Path("song.mp3"), output_type="BOTH")
+    job.wait()
     job.download_all("./out/")
 
 Webhook signature verification lives in :mod:`stemsplit_python.webhooks`.

@@ -220,6 +220,41 @@ def test_download_all_writes_files(tmp_path: Path) -> None:
     assert paths["instrumental"].read_bytes() == b"instrumental-bytes"
 
 
+@respx.mock
+def test_readme_flow_create_wait_download_all(tmp_path: Path) -> None:
+    """The README quick start: download_all() lives on the handle, and works
+    after wait() even though create() returned a job with no outputs yet."""
+    pending = {
+        "id": "job_abc",
+        "status": "PENDING",
+        "progress": 0,
+        "createdAt": "2026-05-21T12:00:00Z",
+    }
+    respx.post("https://stemsplit.io/api/v1/jobs").respond(201, json=pending)
+    respx.get("https://stemsplit.io/api/v1/jobs/job_abc").mock(
+        side_effect=[
+            httpx.Response(200, json={**pending, "status": "PROCESSING", "progress": 50}),
+            httpx.Response(200, json=_completed_job()),
+        ]
+    )
+    respx.get("https://storage.example.com/vocals.mp3", params={"sig": "x"}).respond(
+        200, content=b"vocal-bytes"
+    )
+    respx.get("https://storage.example.com/instrumental.mp3", params={"sig": "x"}).respond(
+        200, content=b"instrumental-bytes"
+    )
+
+    client = StemSplit(api_key="sk_live_test", max_retries=0)
+    job = client.jobs.create(source_url="https://example.com/song.mp3", output_type="BOTH")
+    result = job.wait(timeout=5.0, poll_interval=0.01)
+    paths = job.download_all(tmp_path)
+
+    assert result.status == "COMPLETED"
+    assert not hasattr(result, "download_all")
+    assert paths["vocals"].read_bytes() == b"vocal-bytes"
+    assert paths["instrumental"].read_bytes() == b"instrumental-bytes"
+
+
 def test_create_validates_exactly_one_input_source() -> None:
     client = StemSplit(api_key="sk_live_test", max_retries=0)
     with pytest.raises(ValueError, match="exactly one"):

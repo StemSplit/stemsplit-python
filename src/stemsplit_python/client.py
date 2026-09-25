@@ -46,7 +46,8 @@ class StemSplit:
         from stemsplit_python import StemSplit
 
         client = StemSplit(api_key="sk_live_...")
-        job = client.jobs.create(audio=Path("song.mp3"), output_type="BOTH").wait()
+        job = client.jobs.create(audio=Path("song.mp3"), output_type="BOTH")
+        job.wait()
         job.download_all("./out/")
     """
 

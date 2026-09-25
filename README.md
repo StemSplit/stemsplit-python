@@ -22,7 +22,8 @@ from pathlib import Path
 from stemsplit_python import StemSplit
 
 client = StemSplit(api_key="sk_live_...")          # or set STEMSPLIT_API_KEY
-job = client.jobs.create(audio=Path("song.mp3"), output_type="BOTH").wait()
+job = client.jobs.create(audio=Path("song.mp3"), output_type="BOTH")
+job.wait()                                         # blocks until COMPLETED
 job.download_all("./out/")                         # vocals.mp3 + instrumental.mp3
 ```
 
@@ -138,10 +139,11 @@ for stem, output in job.outputs.as_dict().items():
 ```python
 yt = client.youtube_jobs.create(
     url="https://youtube.com/watch?v=dQw4w9WgXcQ",
-).wait(timeout=900)
+)
+result = yt.wait(timeout=900)    # returns the finished YouTubeJob
 
-print(yt.video_title, yt.video_duration)
-print(yt.audio_metadata.bpm, yt.audio_metadata.key)
+print(result.video_title, result.video_duration)
+print(result.audio_metadata.bpm, result.audio_metadata.key)
 yt.download_all("./out/")        # full_audio + vocals + instrumental
 ```
 
